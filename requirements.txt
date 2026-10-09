@@ -1,8 +1,8 @@
-openai
-azure-search-documents
-pydantic
-streamlit
-pytest
-python-dotenv
-beautifulsoup4
-numpy
+openai==3.27.0
+azure-search-documents==12.0.0
+pydantic==2.14.0
+streamlit==1.65.0
+pytest==9.1.1
+python-dotenv==1.2.4
+beautifulsoup4==4.15.0
+numpy==2.5.3
