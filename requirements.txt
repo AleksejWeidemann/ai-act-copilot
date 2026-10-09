@@ -1,0 +1,8 @@
+openai
+azure-search-documents
+pydantic
+streamlit
+pytest
+python-dotenv
+beautifulsoup4
+numpy
