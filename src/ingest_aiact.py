@@ -112,7 +112,9 @@ def parse_aiact(html_pfad: Path, quellen_pfad: Path) -> list[dict]:
 def main() -> None:
     """Schreibt aiact.json und gibt eine Zusammenfassung aus."""
     eintraege = parse_aiact(HTML_PFAD, QUELLEN_PFAD)
-    JSON_PFAD.write_text(json.dumps(eintraege, ensure_ascii=False, indent=2), encoding="utf-8")
+    JSON_PFAD.write_text(
+        json.dumps(eintraege, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n"
+    )
     artikel = sum(e["typ"] == "artikel" for e in eintraege)
     print(f"Artikel: {artikel}")
     print(f"Anhänge: {len(eintraege) - artikel}")
