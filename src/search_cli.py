@@ -4,44 +4,11 @@ Aufruf: python src/search_cli.py "biometrische Echtzeit-Fernidentifizierung"
 """
 
 import sys
-import time
 
-from azure.core.credentials import AzureKeyCredential
-from azure.search.documents import SearchClient
-from azure.search.documents.models import VectorizedQuery
 from dotenv import load_dotenv
-from openai import AzureOpenAI
 
-from build_index import INDEX_NAME
-from smoke_test import bereinige, env, openai_client
-
-TOP = 5
-FELDER = ["typ", "nummer", "titel", "chunk_nr"]
-
-
-def bette_frage_ein(client: AzureOpenAI, frage: str) -> list[float]:
-    """Bettet die Suchanfrage ein und loggt Tokens und Latenz."""
-    beginn = time.perf_counter()
-    antwort = client.embeddings.create(model=env("AZURE_OPENAI_EMBEDDING_DEPLOYMENT"), input=frage)
-    dauer_ms = (time.perf_counter() - beginn) * 1000
-    print(f"Embedding: {antwort.usage.prompt_tokens} Tokens | {dauer_ms:.0f} ms")
-    return antwort.data[0].embedding
-
-
-def hybrid_suche(search_client: SearchClient, frage: str, vektor: list[float]) -> list[dict]:
-    """Kombiniert Volltextsuche und Vektorsuche (RRF) und liefert die Top-5-Treffer."""
-    beginn = time.perf_counter()
-    treffer = list(
-        search_client.search(
-            search_text=frage,
-            vector_queries=[VectorizedQuery(vector=vektor, k_nearest_neighbors=TOP, fields="vector")],
-            select=FELDER,
-            top=TOP,
-        )
-    )
-    dauer_ms = (time.perf_counter() - beginn) * 1000
-    print(f"Suche: {len(treffer)} Treffer | {dauer_ms:.0f} ms")
-    return treffer
+from smoke_test import bereinige, openai_client
+from suche import aiact_search_client, bette_frage_ein, hybrid_suche
 
 
 def formatiere(rang: int, treffer: dict) -> str:
@@ -60,13 +27,8 @@ def main() -> int:
     frage = " ".join(sys.argv[1:])
     load_dotenv()
     try:
-        vektor = bette_frage_ein(openai_client(), frage)
-        search_client = SearchClient(
-            endpoint=env("AZURE_SEARCH_ENDPOINT"),
-            index_name=INDEX_NAME,
-            credential=AzureKeyCredential(env("AZURE_SEARCH_API_KEY")),
-        )
-        treffer = hybrid_suche(search_client, frage, vektor)
+        vektor, _ = bette_frage_ein(openai_client(), frage)
+        treffer = hybrid_suche(aiact_search_client(), frage, vektor)
     except Exception as exc:
         print(f"FEHLER {type(exc).__name__}: {bereinige(str(exc))[:300]}")
         return 1
