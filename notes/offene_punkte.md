@@ -21,3 +21,8 @@
       ungeprüft (bewusster Tausch Precision vs. Recall) – im Golden Set messen
 - [ ] Golden Set: prüfen, ob Absatzangaben nur genannt werden, wenn der Auszug
       sie zeigt (Regel 1 vs. Vorwissen)
+- [ ] Health-Probe auf /_stcore/health in Container Apps einrichten
+- [ ] Basis-Image per Digest pinnen? (Reproduzierbarkeit vs. Sicherheitsupdates)
+- [ ] Lock-Datei für indirekte Abhängigkeiten, Tests im Container-Build
+- [ ] Konstanten aus build_index in ein eigenes Modul, damit die App nicht vom
+      Build-Skript abhängt
