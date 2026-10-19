@@ -92,6 +92,11 @@ def test_prompt_enthaelt_regeln_auszuege_und_frage(kette: FakeOpenAI) -> None:
     assert "Ist Emotionserkennung erlaubt?" in user["content"]
 
 
+def test_ablehnungssatz_steht_woertlich_im_system_prompt() -> None:
+    assert rag.ABLEHNUNG == "Dazu enthalten die Auszüge keine Angaben."
+    assert f"antworte genau mit dem Satz: {rag.ABLEHNUNG}\n" in rag.SYSTEM_PROMPT
+
+
 def test_suche_fordert_text_der_chunks_an(kette: FakeOpenAI) -> None:
     search_client = FakeSearchClient()
     rag.beantworte("Frage", kette, search_client)
@@ -171,9 +176,9 @@ QUELLEN = [
 @pytest.mark.parametrize(
     "antwort",
     [
-        "Verboten nach Art. 5 Abs. 1 Buchst. f.",
-        "Siehe Artikel 5 und Anhang III.",
-        "Gemäß Art. 4a gilt …",
+        "Das ist verboten (Art. 5 Abs. 1 Buchst. f).",
+        "Das ist verboten (Artikel 5) und hochriskant (Anhang III).",
+        "Es gilt eine Sonderregel (Art. 4a).",
         "Dazu enthalten die Auszüge keine Angaben.",
     ],
 )
@@ -182,13 +187,33 @@ def test_c_belegte_zitate_ergeben_keine_warnung(antwort: str) -> None:
 
 
 @pytest.mark.parametrize(
+    ("antwort", "quellen"),
+    [
+        (
+            "Wenn ein Risiko nach Artikel 79 Absatz 1 vermutet wird (Art. 26 Abs. 5).",
+            [{"typ": "artikel", "nummer": "26", "titel": "Pflichten der Betreiber", "chunk_nr": 2}],
+        ),
+        (
+            "Siehe Anhang I Abschnitt A (Art. 11 Abs. 2).",
+            [{"typ": "artikel", "nummer": "11", "titel": "Technische Dokumentation", "chunk_nr": 0}],
+        ),
+    ],
+)
+def test_c_querverweise_im_fliesstext_werden_nicht_geprueft(
+    antwort: str, quellen: list[dict]
+) -> None:
+    assert rag.pruefe_zitate(antwort, quellen) == []
+
+
+@pytest.mark.parametrize(
     ("antwort", "kennung"),
     [
-        ("Das regelt Artikel 99.", "99"),
-        ("Siehe Art. 50 Abs. 3.", "50"),
-        ("Siehe Anhang IV.", "IV"),
-        ("Art 99 gilt.", "99"),
-        ("Art. 99 und nochmals Art. 99.", "99"),
+        ("Das ist geregelt (Artikel 99).", "99"),
+        ("Es besteht eine Pflicht (Art. 50 Abs. 3).", "50"),
+        ("Das muss enthalten sein (Anhang IV).", "IV"),
+        ("Das gilt (Art 99).", "99"),
+        ("Das gilt (Art. 99) und nochmals (Art. 99).", "99"),
+        ("(Art. 79)", "79"),
     ],
 )
 def test_c_unbelegtes_zitat_ergibt_warnung(antwort: str, kennung: str) -> None:
