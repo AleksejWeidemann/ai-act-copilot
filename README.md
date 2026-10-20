@@ -74,7 +74,7 @@ Gemessen am 20.10.2026 in der Live-App.
 
 Einzelmessung je Frage; Ausgabe-Tokens und Latenz schwanken zwischen Läufen.
 
-Der Großteil der Tokens ist Eingabe-Kontext (die Auszüge). Die Zahl der Auszüge ist deshalb der größte Kostenhebel.
+Je nach Frage sind 74 bis 99 % der Tokens Eingabe-Kontext. Ausgabe-Tokens kosten bei gpt-5.4-mini aber rund das Sechsfache. Bei langen Antworten entfallen deshalb etwa zwei Drittel der Modellkosten auf die Antwort. Die Modellkosten pro Frage liegen unter einem halben US-Cent (Preise Data Zone Standard, Stand 10/2026).
 
 ## Bewusste Entscheidungen
 
