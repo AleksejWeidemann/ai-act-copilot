@@ -26,3 +26,4 @@
 - [ ] Lock-Datei für indirekte Abhängigkeiten, Tests im Container-Build
 - [ ] Konstanten aus build_index in ein eigenes Modul, damit die App nicht vom
       Build-Skript abhängt
+- [ ] Zugangscode: Verzögerung oder Sperre nach Fehlversuchen
