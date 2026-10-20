@@ -1,8 +1,10 @@
 .env
 .venv
 .git
-tests/
-data/
-notes/
-__pycache__/
+tests
+data
+notes
+__pycache__
+.pytest_cache
 *.md
+docs
