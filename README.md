@@ -88,12 +88,16 @@ Der Großteil der Tokens ist Eingabe-Kontext (die Auszüge). Die Zahl der Auszü
 | Scale-to-Zero | Ohne Nutzung entstehen keine Rechenkosten. Dafür dauert der erste Aufruf nach einer Pause länger. |
 | Zugangscode als Kostenschutz | Jede Frage verbraucht Tokens und kostet Geld. Ein offener Zugang wäre ein unbegrenztes Kostenrisiko. |
 
-**Noch nicht enthalten:**
+## Roadmap
 
-- Risikoklassifizierung und Gap-Analyse gegen Anhang IV
-- Upload eigener Dokumente
-- Managed Identity statt API-Keys
-- Golden Set mit automatischer Bewertung
+1. Anhang-IV-Katalog: 15 bis 20 Anforderungen mit Quelle und Prüffrage.
+2. Risikoklassifizierung mit Rolle (Anbieter oder Betreiber), Ausnahme nach Art. 6 Abs. 3 und Anhang-I-Pfad.
+3. Upload eigener Systemdokumentation. Die Inhalte bleiben im Arbeitsspeicher der Sitzung.
+4. Workflow mit genau einer Rückfrage bei fehlenden Angaben.
+5. Gap-Analyse gegen Anhang IV für Anbieter, Pflichtenliste für Betreiber. Kein „erfüllt“ ohne wörtlichen Beleg.
+6. Golden Set mit automatischer Bewertung und wiederholten Messungen.
+7. Tracing und Guardrails.
+8. Managed Identity statt API-Keys und Sperre nach Fehlversuchen beim Zugangscode.
 
 ## Wie es gebaut wurde
 
