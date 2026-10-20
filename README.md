@@ -21,21 +21,23 @@ Ab dem 2. Dezember 2027 gelten die Pflichten der EU-KI-Verordnung für Hochrisik
 ## Architektur
 
 ```mermaid
-flowchart LR
+flowchart TB
     subgraph A["A · Wissensaufbau (einmalig)"]
+        direction LR
         A1["EUR-Lex-HTML<br/>(konsolidierte Fassung)"] --> A2["ingest_aiact.py<br/>Artikel und Anhänge parsen"]
         A2 --> A3["aiact.json"]
         A3 --> A4["build_index.py<br/>Chunks bis 2.000 Zeichen,<br/>Embeddings (1.536 Dim.)"]
         A4 --> A5[("Azure AI Search<br/>Index aiact")]
     end
     subgraph B["B · Frage"]
+        direction LR
         B1["Streamlit<br/>mit Zugangscode"] --> B2["Embedding der Frage"]
         B2 --> B3["Hybrid-Suche<br/>BM25 + Vektor, Top 5"]
         B3 --> B4["gpt-5.4-mini"]
         B4 --> B5["Zitatprüfung"]
         B5 --> B6["Antwort mit Quellen"]
     end
-    A5 -.-> B3
+    A -.-> B
 ```
 
 Die Volltextsuche nutzt den deutschen Analyzer `de.microsoft`, die Vektorsuche einen HNSW-Index. Beide Ergebnislisten werden per Reciprocal Rank Fusion zusammengeführt. Die RAG-Kette steht in `src/rag.py` und kommt ohne Framework aus.
